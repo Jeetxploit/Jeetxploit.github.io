@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sec_portfolio — Penetration Tester</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #e05252;
+      --accent-dim: rgba(224,82,82,0.08);
+      --accent-border: rgba(224,82,82,0.3);
+      --green: #22c55e;
+      --blue: #0ea5e9;
+      --bg: #0d0d0d;
+      --bg2: #141414;
+      --bg3: #1a1a1a;
+      --border: rgba(255,255,255,0.07);
+      --border-mid: rgba(255,255,255,0.12);
+      --text: #f0ede8;
+      --muted: #888882;
+      --font-mono: 'Courier New', Courier, monospace;
+      --font-serif: Georgia, 'Times New Roman', serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── SCROLLBAR ──────────────────────────── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* ─── NAV ────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.1rem 4rem;
+      background: rgba(13,13,13,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .nav-brand em { color: var(--accent); font-style: normal; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ─── WRAPPER ─────────────────────────────── */
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ─── HERO ───────────────────────────────── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 2.2fr;
+      gap: 0;
+      padding: 5rem 4rem 4rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .hero-left {
+      border-right: 1px solid var(--border);
+      padding-right: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-top: 0.25rem;
+    }
+    .hero-index {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .availability {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green);
+      padding: 7px 13px;
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 2px;
+      background: rgba(34,197,94,0.05);
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: blink 1.5s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+    .hero-right { padding-left: 3rem; }
+    .hero-right h1 {
+      font-family: var(--font-serif);
+      font-size: 56px;
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+    .hero-right h1 span { color: var(--accent); }
+    .hero-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.9;
+      max-width: 500px;
+      margin-bottom: 2rem;
+    }
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    /* ─── BUTTONS ─────────────────────────────── */
+    .btn-red {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 11px 24px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+    .btn-red:hover { background: #c94444; }
+    .btn-ghost {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 11px 24px;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border-mid);
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+
+    /* ─── STATS ───────────────────────────────── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0 auto 5rem;
+      max-width: 960px;
+      padding: 0 4rem;
+      box-sizing: content-box;
+    }
+    .stat {
+      padding: 1.5rem 1.75rem;
+      border-right: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: 30px;
+      color: var(--accent);
+      font-weight: 400;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ─── SECTIONS ────────────────────────────── */
+    section {
+      max-width: 960px;
+      margin: 0 auto 5rem;
+      padding: 0 4rem;
+    }
+    .sec-label {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .sec-tag {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .sec-rule { flex: 1; height: 1px; background: var(--border); }
+    .sec-title {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    /* ─── ABOUT ───────────────────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+    .about-body {
+      font-family: var(--font-serif);
+      font-size: 15px;
+      line-height: 1.95;
+      color: var(--muted);
+    }
+    .about-body strong { color: var(--text); font-weight: 500; }
+    .meta { display: flex; flex-direction: column; }
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      gap: 1rem;
+    }
+    .meta-key { color: var(--muted); letter-spacing: 0.06em; }
+    .meta-val { color: var(--text); text-align: right; }
+    .meta-val.green { color: var(--green); }
+
+    /* ─── SKILLS ──────────────────────────────── */
+    .skills-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+    .skill-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 13px 16px;
+      background: var(--bg2);
+      font-size: 12px;
+      transition: background 0.15s;
+    }
+    .skill-row:hover { background: var(--bg3); }
+    .skill-name { flex: 1; color: var(--text); letter-spacing: 0.03em; }
+    .skill-bar-wrap { width: 80px; height: 2px; background: var(--border-mid); flex-shrink: 0; }
+    .skill-bar-fill { height: 2px; background: var(--accent); }
+    .skill-pct { color: var(--accent); min-width: 36px; text-align: right; font-size: 11px; }
+    .certs {
+      margin-top: 1.75rem;
+      padding-top: 1.75rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .cert {
+      font-size: 11px;
+      padding: 5px 14px;
+      border: 1px solid var(--border-mid);
+      border-radius: 2px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+    .cert-hot {
+      border-color: var(--accent-border);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    /* ─── PROJECTS ────────────────────────────── */
+    .projects { display: flex; flex-direction: column; gap: 2px; }
+    .proj {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: start;
+      gap: 1.5rem;
+      padding: 1.4rem 1.25rem;
+      background: var(--bg2);
+      cursor: pointer;
+      transition: background 0.15s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .proj:hover { background: var(--bg3); }
+    .proj-num {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      padding-top: 3px;
+      min-width: 28px;
+    }
+    .proj-title {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .proj-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 10px;
+    }
+    .proj-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .proj-tag {
+      font-size: 10px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+    .proj-type {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 2px;
+      white-space: nowrap;
+      height: fit-content;
+    }
+    .type-ctf { color: var(--blue); background: rgba(14,165,233,0.1); }
+    .type-tool { color: var(--green); background: rgba(34,197,94,0.08); }
+    .type-vuln { color: var(--accent); background: var(--accent-dim); }
+    .type-lab { color: #a78bfa; background: rgba(167,139,250,0.08); }
+
+    /* ─── CONTACT ─────────────────────────────── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .contact-intro {
+      font-family: var(--font-serif);
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .contact-links { display: flex; flex-direction: column; gap: 2px; }
+    .clink {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 16px;
+      background: var(--bg2);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+    }
+    .clink:hover { background: var(--bg3); }
+    .clink-ico {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: var(--accent);
+      border: 1px solid var(--accent-border);
+      border-radius: 2px;
+      flex-shrink: 0;
+      font-style: normal;
+    }
+    .clink-key {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .clink-val { font-size: 12px; color: var(--text); }
+
+    /* ─── FORM ────────────────────────────────── */
+    form { display: flex; flex-direction: column; gap: 8px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    form input, form textarea {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 11px 15px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text);
+      resize: none;
+      letter-spacing: 0.03em;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    form input:focus, form textarea:focus {
+      outline: none;
+      border-color: var(--accent-border);
+    }
+    form input::placeholder, form textarea::placeholder { color: var(--muted); }
+
+    /* ─── FOOTER ──────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .footer-txt { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+    .footer-txt span { color: var(--accent); }
+
+    /* ─── RESPONSIVE ──────────────────────────── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1.2rem; }
+      .hero { grid-template-columns: 1fr; padding: 3rem 1.5rem 2.5rem; }
+      .hero-left { border-right: none; border-bottom: 1px solid var(--border); padding: 0 0 1.5rem; margin-bottom: 1.5rem; }
+      .hero-right { padding-left: 0; }
+      .hero-right h1 { font-size: 36px; }
+      .stats { grid-template-columns: 1fr 1fr; padding: 0 1.5rem; }
+      .stat { border-bottom: 1px solid var(--border); }
+      section { padding: 0 1.5rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .skills-cols { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-brand">sec<em>_</em>portfolio</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Work</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-index">// 001 — Introduction</div>
+      <div class="availability"><div class="dot"></div> Available for hire</div>
+    </div>
+    <div class="hero-right">
+      <h1>Offensive<br>Security<br><span>Engineer.</span></h1>
+      <p class="hero-desc">I specialize in penetration testing, vulnerability research, and red team operations. I find the holes attackers look for — and help you close them permanently.</p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn-red">View work →</a>
+        <a href="#contact" class="btn-ghost">Hire me</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="stat-num">3+</div><div class="stat-label">Years experience</div></div>
+    <div class="stat"><div class="stat-num">40+</div><div class="stat-label">CTFs completed</div></div>
+    <div class="stat"><div class="stat-num">15+</div><div class="stat-label">CVEs reported</div></div>
+    <div class="stat"><div class="stat-num">5</div><div class="stat-label">Certifications</div></div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="sec-label">
+      <span class="sec-tag">// 002</span>
+      <div class="sec-rule"></div>
+      <span class="sec-title">About me</span>
+    </div>
+    <div class="about-grid">
+      <p class="about-body">
+        I'm a penetration tester based in <strong>Bangladesh</strong> with a deep focus on
+        <strong>web application security, network assessments,</strong> and <strong>red team engagements.</strong>
+        <br><br>
+        My methodology is built on real attacker thinking — I don't just run automated scanners.
+        I dig into logic flaws, business-layer vulnerabilities, and chained exploits that automated
+        tools miss. Every report I deliver is actionable, prioritized, and written for both
+        technical and executive audiences.
+      </p>
+      <div class="meta">
+        <div class="meta-row"><span class="meta-key">Location</span><span class="meta-val">Bangladesh</span></div>
+        <div class="meta-row"><span class="meta-key">Specialization</span><span class="meta-val">Pentest / Red Team</span></div>
+        <div class="meta-row"><span class="meta-key">Education</span><span class="meta-val">B.Sc. CSE</span></div>
+        <div class="meta-row"><span class="meta-key">Bug Bounty</span><span class="meta-val">HackerOne / Bugcrowd</span></div>
+        <div class="meta-row"><span class="meta-key">Status</span><span class="meta-val green">Open to work</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="sec-label">
+      <span class="sec-tag">// 003</span>
+      <div class="sec-rule"></div>
+      <span class="sec-title">Skills & certifications</span>
+    </div>
+    <div class="skills-cols">
+      <div class="skill-row"><span class="skill-name">Web App Pentesting</span><div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:92%"></div></div><span class="skill-pct">92%</span></div>
+      <div class="skill-row"><span class="skill-name">Network Pentesting</span><div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:80%"></div></div><span class="skill-pct">80%</span></div>
+      <div class="skill-row"><span class="skill-name">Burp Suite Pro</span><div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:90%"></div></div><span class="skill-pct">90%</span></div>
+      <div class="skill-row"><span class="skill-name">Metasploit / Nmap</span><div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:84%"></div></div><span class="skill-pct">84%</span></div>
+      <div class="skill-row"><span class="skill-name">Python / Bash scripting</span><div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:78%"></div></div><span class="skill-pct">78%</span></div>
+      <div class="skill-row"><span class="skill-name">Active Directory attacks</span><div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:72%"></div></div><span class="skill-pct">72%</span></div>
+      <div class="skill-row"><span class="skill-name">OWASP Top 10</span><div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:96%"></div></div><span class="skill-pct">96%</span></div>
+      <div class="skill-row"><span class="skill-name">Report writing</span><div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:88%"></div></div><span class="skill-pct">88%</span></div>
+    </div>
+    <div class="certs">
+      <span class="cert cert-hot">OSCP</span>
+      <span class="cert cert-hot">CEH</span>
+      <span class="cert">CompTIA Security+</span>
+      <span class="cert">eJPT</span>
+      <span class="cert">HTB Pro Hacker</span>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="sec-label">
+      <span class="sec-tag">// 004</span>
+      <div class="sec-rule"></div>
+      <span class="sec-title">Projects & CTF writeups</span>
+    </div>
+    <div class="projects">
+      <a class="proj" href="#">
+        <span class="proj-num">01</span>
+        <div>
+          <div class="proj-title">SQL Injection to RCE — HTB: Enterprise</div>
+          <p class="proj-desc">Blind SQLi in a WordPress plugin → credential dump → PHP file write → RCE → SUID privesc to root. Full chain documented.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">SQLi</span>
+            <span class="proj-tag">PHP</span>
+            <span class="proj-tag">PrivEsc</span>
+            <span class="proj-tag">HackTheBox</span>
+          </div>
+        </div>
+        <span class="proj-type type-ctf">CTF</span>
+      </a>
+      <a class="proj" href="#">
+        <span class="proj-num">02</span>
+        <div>
+          <div class="proj-title">Recon automation framework</div>
+          <p class="proj-desc">Python tool chaining subdomain enum, port scan, and screenshot capture. Reduces recon time by ~70% for bug bounty workflows.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">Python</span>
+            <span class="proj-tag">Automation</span>
+            <span class="proj-tag">Bug Bounty</span>
+          </div>
+        </div>
+        <span class="proj-type type-tool">Tool</span>
+      </a>
+      <a class="proj" href="#">
+        <span class="proj-num">03</span>
+        <div>
+          <div class="proj-title">Fintech web app assessment</div>
+          <p class="proj-desc">Black-box assessment uncovering 3 critical vulnerabilities including an IDOR leading to full account takeover. Full executive report delivered.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">IDOR</span>
+            <span class="proj-tag">Auth Bypass</span>
+            <span class="proj-tag">OWASP</span>
+          </div>
+        </div>
+        <span class="proj-type type-vuln">Vuln</span>
+      </a>
+      <a class="proj" href="#">
+        <span class="proj-num">04</span>
+        <div>
+          <div class="proj-title">Active Directory red team lab</div>
+          <p class="proj-desc">Built a home lab simulating enterprise AD environment. Practiced Kerberoasting, Pass-the-Hash, and lateral movement techniques end-to-end.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">Active Directory</span>
+            <span class="proj-tag">Kerberos</span>
+            <span class="proj-tag">Red Team</span>
+          </div>
+        </div>
+        <span class="proj-type type-lab">Lab</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="sec-label">
+      <span class="sec-tag">// 005</span>
+      <div class="sec-rule"></div>
+      <span class="sec-title">Contact</span>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <p class="contact-intro">Open to freelance pentesting engagements, bug bounty collaborations, and full-time security roles. Response within 24 hours.</p>
+        <div class="contact-links">
+          <a class="clink" href="mailto:you@email.com">
+            <i class="clink-ico">✉</i>
+            <div><div class="clink-key">Email</div><div class="clink-val">you@email.com</div></div>
+          </a>
+          <a class="clink" href="https://linkedin.com/in/yourname" target="_blank" rel="noopener">
+            <i class="clink-ico">in</i>
+            <div><div class="clink-key">LinkedIn</div><div class="clink-val">linkedin.com/in/yourname</div></div>
+          </a>
+          <a class="clink" href="https://github.com/yourname" target="_blank" rel="noopener">
+            <i class="clink-ico">GH</i>
+            <div><div class="clink-key">GitHub</div><div class="clink-val">github.com/yourname</div></div>
+          </a>
+          <a class="clink" href="https://app.hackthebox.com/profile/yourname" target="_blank" rel="noopener">
+            <i class="clink-ico">🚩</i>
+            <div><div class="clink-key">HackTheBox</div><div class="clink-val">app.hackthebox.com/profile</div></div>
+          </a>
+        </div>
+      </div>
+      <form onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <input type="text" placeholder="Name" required />
+          <input type="email" placeholder="Email" required />
+        </div>
+        <input type="text" placeholder="Subject" />
+        <textarea rows="5" placeholder="Message..."></textarea>
+        <button type="submit" class="btn-red" style="align-self:flex-start; border:none;">Send message →</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-txt">© 2026 — <span>Your Name</span></div>
+    <div class="footer-txt">Built with purpose. Tested with intent.</div>
+  </footer>
+
+  <script>
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      btn.textContent = 'Sent ✓';
+      btn.style.background = '#22c55e';
+      setTimeout(() => {
+        btn.textContent = 'Send message →';
+        btn.style.background = '';
+        e.target.reset();
+      }, 3000);
+    }
+  </script>
+
+</body>
+</html>
